@@ -31,7 +31,7 @@ async function readParquet() {
 
 // option chooser
 function choose_option() {
-  rl.question("[1] -> Fetch & group logos\n[2] -> Close\n> ", async (option) => {
+  rl.question("[1] -> Fetch & download logos\n[2] -> Group logos\n> ", async (option) => {
     switch (option) {
       case "1":
         await f.getLogoImagesFromURL('https://www.toyotafocsani.ro/')
@@ -39,7 +39,7 @@ function choose_option() {
         break;
 
       case "2":
-        console.log("Goodbye");
+        console.log("Still working");
         break;
   
       default:
