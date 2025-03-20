@@ -69,19 +69,21 @@ async function getLogoImagesFromURL(url) {
   }
 
   async function loopImages(images, $) {
+    let flag = true;
+
     for(let image of images) { 
       // create a constat of current image file
       const image_el = $(image);
       
       // get the alt and src attribute
-      let alt = image_el.attr("alt");
+      let alt = image_el.attr("alt") || "";
       let src = image_el.attr("src");
-
+      
       // check if the current image is a logo, based on alt attribute
       if(isImageLogo(alt)) {
         // if so, we print a status message for UI
         console.log(`✅ Logo found by alt ${alt}, src: ${src}`);
-
+        flag = false;
         // downlaod the file
         await downloadFile(src);
 
@@ -89,6 +91,9 @@ async function getLogoImagesFromURL(url) {
         break;
       }
       
+    }
+    if(flag) {
+      console.log(`❌ No logo images for for ${url}`)
     }
   }
 
@@ -103,12 +108,10 @@ async function getLogoImagesFromURL(url) {
 
     // if there are no images, we need to check all iamges for alt attributes which contains logo
     if(!images.length) {
-      // we need another aproach to get the logo ( if there is one) we can scan all images from the apge.      
-      images = $('img').map(function() {
-        console.log(this);
+      // we need another aproach to get the logo ( if there is one) we can scan all images from the page.      
+      images = $("img").toArray();
         
-      });
-                  
+
       // if there are no images to iterate
       if(images.length <= 0) {
         throw new Error(`❌ No logo images for for ${url}`)

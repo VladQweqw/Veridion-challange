@@ -14,15 +14,24 @@ const rl = readline.createInterface({
   output: process.stdout
 })
 
-
+// read the parquet file
 async function readParquet() {
+  // open the parquet
   const reader = await parquet.ParquetReader.openFile('./data/logos.parquet');
-  
+
+  // cursor meaning where it starts to read
   const cursor = reader.getCursor();
   let record = null;
   
+  // while there is data, we read it
   while (record = await cursor.next()) {
-    console.log(record);
+    // data stored as { domain: string }
+    
+    const final_domain = "http://www." + record.domain;
+
+    // download each logo locally
+    console.log(final_domain);
+    await f.getLogoImagesFromURL(final_domain)
   }
 
   await reader.close();
@@ -34,13 +43,12 @@ function choose_option() {
   rl.question("[1] -> Fetch & download logos\n[2] -> Group logos\n> ", async (option) => {
     switch (option) {
       case "1":
-        await f.getLogoImagesFromURL('https://www.toyotafocsani.ro/')
+        f.getLogoImagesFromURL("https://www.kia-moeller-wunstorf.de/");
         choose_option()
         break;
 
       case "2":
-        console.log(f.getDomainFromURL("https://www.toyotafocsani.ro/"));
-        
+                
         break;
   
       default:
