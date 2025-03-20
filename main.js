@@ -39,7 +39,8 @@ function choose_option() {
         break;
 
       case "2":
-        console.log("Still working");
+        console.log(f.getDomainFromURL("https://www.toyotafocsani.ro/"));
+        
         break;
   
       default:
