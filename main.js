@@ -6,7 +6,7 @@ const parquet = require('parquetjs-lite');
 const readline = require("readline");
 
 // library with secondary functions to keep main file clean
-const f = require("./functions/functions")
+const f = require("./functions/logo_scrapper")
 
 // default configuration
 const rl = readline.createInterface({
@@ -30,21 +30,26 @@ async function readParquet() {
     const final_domain = "http://www." + record.domain;
 
     // download each logo locally
-    console.log(final_domain);
+    console.log("\n---------------------");
+    console.log(`Checking ${final_domain}`);
     await f.getLogoImagesFromURL(final_domain)
+    console.log("---------------------");
+
+    
   }
 
+  choose_option()
   await reader.close();
 }
 
-
 // option chooser
 function choose_option() {
-  rl.question("[1] -> Fetch & download logos\n[2] -> Group logos\n> ", async (option) => {
+  rl.question("\n[1] -> Fetch & download logos\n[2] -> Group logos\nOption: ", async (option) => {    
     switch (option) {
       case "1":
-        f.getLogoImagesFromURL("https://www.kia-moeller-wunstorf.de/");
-        choose_option()
+        // readParquet()
+        f.getLogoImagesFromURL('http://www.astrazeneca.ua')
+        
         break;
 
       case "2":
@@ -52,7 +57,7 @@ function choose_option() {
         break;
   
       default:
-        console.log("\n!!! Invalid option, please choose again: ");
+        console.log("!!! Invalid option, please choose again: ");
         choose_option()
         break;
       }  
