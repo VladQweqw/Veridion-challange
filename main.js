@@ -52,7 +52,7 @@ function choose_option() {
     switch (option) {
       case "1":
         // readParquet()
-        f.getLogoImagesFromURL('https://vladpoienariu.netlify.app/')
+        f.getLogoImagesFromURL('https://www.kia-moeller-wunstorf.de/')
         
         break;
 

@@ -21,7 +21,7 @@ const headersConfig = {
 async function downloadFile(image_url, website_url) {
   // make sure the directory exists
   utils.createDirectory(DIR_PATH);  
-
+  
   try {
     // check if the logo url is relative e.g /etc/designs/logo .. if so append the website_url
     if(!image_url.startsWith("http")) {
