@@ -79,8 +79,8 @@ async function getLogoImagesFromURL(url) {
     const $ = cheerio.load(data);
   
     // call another fucntion to try and fetch the logo by numerous tactics
-    // tryFetchLogo data=> should return the path to the logo
-    const resp = await options.tryFetchLogo($)
+    // tryFetchLogo data=> should return the path to the logo    
+    const resp = await options.tryFetchLogo($, url)
 
     // if the status is true it means we found a logo
     if(resp.status) {
