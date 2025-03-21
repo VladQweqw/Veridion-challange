@@ -16,6 +16,8 @@ const rl = readline.createInterface({
 
 // read the parquet file
 async function readParquet() {
+  let index = 1;
+  let total_success = 0;
   // open the parquet
   const reader = await parquet.ParquetReader.openFile('./data/logos.parquet');
 
@@ -26,17 +28,21 @@ async function readParquet() {
   // while there is data, we read it
   while (record = await cursor.next()) {
     // data stored as { domain: string }
-    
     const final_domain = "http://www." + record.domain;
-
+    if(index > 3) {
+      break;
+    }
     // download each logo locally
-    console.log("\n---------------------");
+    console.log(`\n------- Website ${index++} -------`);
     console.log(`Checking ${final_domain}`);
-    await f.getLogoImagesFromURL(final_domain)
+    const resp = await f.getLogoImagesFromURL(final_domain)
+    if(resp) {
+      total_success++;
+    }
     console.log("---------------------");
-
-    
   }
+
+  console.log(`🚚 Summary: ${total_success}/${index} logos = ${Math.floor((total_success * 100) / index)}% success rate`);
 
   choose_option()
   await reader.close();
@@ -47,8 +53,8 @@ function choose_option() {
   rl.question("\n[1] -> Fetch & download logos\n[2] -> Group logos\nOption: ", async (option) => {    
     switch (option) {
       case "1":
-        // readParquet()
-        f.getLogoImagesFromURL('http://www.astrazeneca.ua')
+        readParquet()
+        // f.getLogoImagesFromURL('http://www.intersport-rent.fr')
         
         break;
 

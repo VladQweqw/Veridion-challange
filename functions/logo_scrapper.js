@@ -45,21 +45,26 @@ async function downloadFile(image_url, website_url) {
 
     // pass the save_path to writeStream and save the file
     const writer = fs.createWriteStream(save_path);
-    resp.data.pipe(writer);
-    
-    // if everything worked well display a message
-    writer.on("finish", () => {
-      console.log("✔ Image saved succsfully!");
+
+    return new Promise((resolve, reject) => {
+      resp.data.pipe(writer);
+
+      // if everything worked well display a message
+      writer.on("finish", () => {
+        console.log("✅ Image saved succesfully!");
+        resolve("SUCCESS")
+      })
+
+      // if there were erros throw Error and catch it later
+      writer.on("error", (err) => {
+        reject("FAILED")
+      })
     })
     
-    // if there were erros throw Error and catch it later
-    writer.on("error", (err) => {
-      throw new Error(err)
-    })
+
   }catch(Exception) {
     console.log(`❌ Error downloading the logo`);
     console.log(Exception);
-    
   }
 }
 
@@ -88,16 +93,15 @@ async function loopImages(images, $, url) {
       // if so, we print a status message for UI
       console.log(`✅ Logo found by alt ${alt}, src: ${src}`);
       flag = false;
-      // downlaod the file
-      await downloadFile(src, url);
 
-      // if we found an logo, we can skip the rest
-      break;
+      // download the file
+      // return true / false if was success or not
+      return await downloadFile(src, url)
     }
-    
   }
   if(flag) {
     console.log(`❌ No logo images for for ${url}`)
+    return false;
   }
 }
 
@@ -127,12 +131,13 @@ async function getLogoImagesFromURL(url) {
     }
 
     // loop over images only if there are any
-    loopImages(images, $, url)
+    return await loopImages(images, $, url)
   }catch(Exception) {
     // catch the exception me or the beloved js may throw
     console.log("❌ Error while fetching websites HTML");
     console.log(Exception);
-    
+
+    return false;
   }
 }
 
