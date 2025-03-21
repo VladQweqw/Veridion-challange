@@ -29,9 +29,7 @@ async function readParquet() {
   while (record = await cursor.next()) {
     // data stored as { domain: string }
     const final_domain = "http://www." + record.domain;
-    if(index > 3) {
-      break;
-    }
+  
     // download each logo locally
     console.log(`\n------- Website ${index++} -------`);
     console.log(`Checking ${final_domain}`);
@@ -53,8 +51,8 @@ function choose_option() {
   rl.question("\n[1] -> Fetch & download logos\n[2] -> Group logos\nOption: ", async (option) => {    
     switch (option) {
       case "1":
-        readParquet()
-        // f.getLogoImagesFromURL('http://www.intersport-rent.fr')
+        // readParquet()
+        f.getLogoImagesFromURL('https://vladpoienariu.netlify.app/')
         
         break;
 

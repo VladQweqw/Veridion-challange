@@ -5,6 +5,7 @@ const path = require("path");
 
 // import utils module
 const utils = require("./utils")
+const options = require("./logo_scrapper_options")
 
 // default image saving location
 const SAVE_PATH = '../logos/';
@@ -51,7 +52,7 @@ async function downloadFile(image_url, website_url) {
 
       // if everything worked well display a message
       writer.on("finish", () => {
-        console.log("✅ Image saved succesfully!");
+        console.log("✅ Logo saved succesfully!");
         resolve("SUCCESS")
       })
 
@@ -68,43 +69,6 @@ async function downloadFile(image_url, website_url) {
   }
 }
 
-function isImageLogo(alt) {    
-  // LoGo / LOGO / AWcLoGo will all match, and therefore we have found a logo
-  if(alt.toLocaleLowerCase().includes('logo')) {
-    return true;
-  }
-  // default return false
-  return false;
-}
-
-async function loopImages(images, $, url) {
-  let flag = true;
-
-  for(let image of images) { 
-    // create a constat of current image file
-    const image_el = $(image);
-    
-    // get the alt and src attribute
-    let alt = image_el.attr("alt") || "";
-    let src = image_el.attr("src");
-    
-    // check if the current image is a logo, based on alt attribute
-    if(isImageLogo(alt)) {
-      // if so, we print a status message for UI
-      console.log(`✅ Logo found by alt ${alt}, src: ${src}`);
-      flag = false;
-
-      // download the file
-      // return true / false if was success or not
-      return await downloadFile(src, url)
-    }
-  }
-  if(flag) {
-    console.log(`❌ No logo images for for ${url}`)
-    return false;
-  }
-}
-
 // fucntion to scrape image logo from websites
 async function getLogoImagesFromURL(url) {
   try {
@@ -113,28 +77,22 @@ async function getLogoImagesFromURL(url) {
       headers: headersConfig
     });
     const $ = cheerio.load(data);
-    
-    // first check if there are any iamges in header
-    let images = $("header img").toArray()
-    // let images = []
+  
+    // call another fucntion to try and fetch the logo by numerous tactics
+    // tryFetchLogo data=> should return the path to the logo
+    const resp = await options.tryFetchLogo($)
 
-    // if there are no images, we need to check all iamges for alt attributes which contains logo
-    if(!images.length) {
-      // we need another aproach to get the logo ( if there is one) we can scan all images from the page.      
-      images = $("img").toArray();
-        
-
-      // if there are no images to iterate
-      if(images.length <= 0) {
-        throw new Error(`❌ No logo images for for ${url}`)
-      }
+    // if the status is true it means we found a logo
+    if(resp.status) {
+      // loop over images only if there are any
+      return await downloadFile(resp.data, url)
+    }else {
+      // otherwise we haven't
+      console.log(`❌ No logo images for for ${url}`)
     }
-
-    // loop over images only if there are any
-    return await loopImages(images, $, url)
   }catch(Exception) {
     // catch the exception me or the beloved js may throw
-    console.log("❌ Error while fetching websites HTML");
+    console.log("❌ An error occured");
     console.log(Exception);
 
     return false;
