@@ -8,6 +8,8 @@ const readline = require("readline");
 // library with secondary functions to keep main file clean
 const f = require("./functions/logo_scrapper")
 
+const utils = require("./functions/utils")
+
 // default configuration
 const rl = readline.createInterface({
   input: process.stdin,
@@ -28,10 +30,12 @@ async function readParquet() {
   // while there is data, we read it
   while (record = await cursor.next()) {
     // data stored as { domain: string }
-    const final_domain = "http://www." + record.domain;
+    const final_domain = "https://www." + record.domain;
   
     // download each logo locally
+    if(index > 99) break;
     console.log(`\n------- Website ${index++} -------`);
+    
     console.log(`Checking ${final_domain}`);
     const resp = await f.getLogoImagesFromURL(final_domain)
     if(resp) {
@@ -51,8 +55,9 @@ function choose_option() {
   rl.question("\n[1] -> Fetch & download logos\n[2] -> Group logos\nOption: ", async (option) => {    
     switch (option) {
       case "1":
-        readParquet()
-        // f.getLogoImagesFromURL('https://ccusa.co.nz/')
+        await readParquet()
+        // utils.getProperURL('https://www.ccusa.co.nz/')
+        await f.getLogoImagesFromURL('https://ccusa.co.nz/')
         
         break;
 

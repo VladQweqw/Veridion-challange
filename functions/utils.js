@@ -1,4 +1,7 @@
 const fs = require("fs");
+const headersConfig = require("./constants");
+const axios = require("axios")
+
 
 function getDomainFromURL(url) {
     // build in js function 
@@ -30,8 +33,35 @@ function createDirectory(path) {
     }
 }
 
+async function getProperURL(url) {
+    const https_www = "https://www." + url;
+    const https = "https://" + url;
+    const http_www = "http://www." + url;
+    const http = "http://" + url;
+
+    const order = [
+        https_www, 
+        http_www, 
+        https, 
+        http
+    ];
+    
+    for(protocol of order) {
+        const resp = await axios.head(protocol, {
+              headers: headersConfig
+        });        
+
+        if(resp.status === 200) {
+            return protocol;
+        }    
+    } 
+
+    return http;
+}
+
 module.exports = {
     getDomainFromURL,
     getExtension,
-    createDirectory
+    createDirectory,
+    getProperURL
 }

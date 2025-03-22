@@ -7,16 +7,7 @@ const path = require("path");
 const utils = require("./utils")
 const options = require("./logo_scrapper_options")
 
-// default image saving location
-const SAVE_PATH = '../logos/';
-const DIR_PATH = path.join(__dirname, "..", "logos")
-
-// axios headers config to prevent 403 Fobridden erros
-const headersConfig = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-  'Accept-Language': 'en-US,en;q=0.9',
-}
+const constants = require("./constants")
 
 function correctImageURL(image_url, website_url) {
   
@@ -39,8 +30,8 @@ function correctImageURL(image_url, website_url) {
 
 async function downloadFile(image_url, website_url) {
   // make sure the directory exists
-  utils.createDirectory(DIR_PATH);    
-  
+  utils.createDirectory(constants.DIR_PATH);    
+
   try {
     // check function comments
     image_url = correctImageURL(image_url, website_url)
@@ -50,17 +41,17 @@ async function downloadFile(image_url, website_url) {
       method: 'GET',
       url: image_url,
       responseType: 'stream',
-      headers: headersConfig
+      headers: constants.headersConfig
     })
     
     // create the save path
     // dirname is /function, we need to go 1 dir up so "../logos_images" and the save name which is the domain of website + extension
     const save_path = path.join(
       __dirname, 
-      SAVE_PATH, 
+      constants.SAVE_PATH, 
       utils.getDomainFromURL(website_url) + utils.getExtension(image_url)
     )
-
+    
     // pass the save_path to writeStream and save the file
     const writer = fs.createWriteStream(save_path);
 
@@ -81,9 +72,7 @@ async function downloadFile(image_url, website_url) {
     
 
   }catch(Exception) {
-    console.log(`|-> ❌ Error downloading the logo`);
-    // console.log(Exception);
-    
+    console.log(`|-> ❌ Error downloading the logo`);        
   }
 }
 
@@ -92,7 +81,7 @@ async function getLogoImagesFromURL(url) {
   try {
     // get the html and load it into cheerio
     const { data } = await axios.get(url, {
-      headers: headersConfig
+      headers: constants.headersConfig
     });
     const $ = cheerio.load(data);
     
@@ -113,7 +102,7 @@ async function getLogoImagesFromURL(url) {
         
         // if a logo was succesfully downlaoded we can stop downlaoding the rest
         if(state === "SUCCESS") {
-          return 
+          return true
         };
       }  
     }else {
@@ -122,8 +111,13 @@ async function getLogoImagesFromURL(url) {
     }
   }catch(Exception) {
     // catch the exception me or the beloved js may throw
-    console.log("❌ An error occured");
-    console.log(Exception);
+    if(Exception.status === 403) {
+      console.log("😔 Access not permitted");
+    }else {
+      console.log("❌ An error occured");
+      console.log(Exception);
+      
+    }
 
     return false;
   }

@@ -75,9 +75,11 @@ function scanForLogo(parent, $, url) {
   for (let image of images_arr) {
     const image_class = $(image).attr("class"); // get the class of the image
     const image_src = $(image).attr("src"); // get the src of the image
-
+    const image_alt = $(image).attr("alt") // get the alt
+    
+    // or if the alt has logo in it
     // if the image has logo somewhere in the class e.g first_hidden_logo_ we grab it and return it
-    if (image_class?.includes("logo")) {
+    if (image_class?.toLowerCase().includes("logo") || image_alt?.toLowerCase().includes('logo')) {
       return image_src;
     }
   }
@@ -94,10 +96,12 @@ function scanForLogo(parent, $, url) {
 
       return img_src;
     }
-    
-    if (new URL(href).href === new URL(url).href) {
-      const img_src = $(anchor).find("img").attr("src");
-      return img_src;
+
+    if(href.startsWith("http") && url.startsWith("http")) {
+      if (new URL(href)?.href === new URL(url)?.href) {
+        const img_src = $(anchor).find("img").attr("src");
+        return img_src;
+      }
     }
   }
   // if nothing is found we retur null
@@ -121,5 +125,6 @@ async function tryFetchLogo($, url) {
 }
 
 module.exports = {
-  tryFetchLogo
+  tryFetchLogo,
+  
 }
