@@ -18,15 +18,29 @@ const headersConfig = {
   'Accept-Language': 'en-US,en;q=0.9',
 }
 
+function correctImageURL(image_url, website_url) {
+  // a case where http is missing  
+  if(image_url.startsWith("//")) {    
+    image_url = "http:" + image_url;
+   
+    return image_url
+  }
+
+
+  // check if the logo url is relative e.g /etc/designs/logo .. if so append the website_url    
+  if(!image_url.startsWith("http") && !image_url.startsWith("www")) {
+    image_url = website_url + image_url;
+  }
+}
+
 async function downloadFile(image_url, website_url) {
   // make sure the directory exists
   utils.createDirectory(DIR_PATH);  
   
   try {
-    // check if the logo url is relative e.g /etc/designs/logo .. if so append the website_url
-    if(!image_url.startsWith("http")) {
-      image_url = website_url + image_url
-    }
+    // check function comments
+    image_url = correctImageURL(image_url, website_url)
+    console.log(image_url);
     
     // get the image as stream
     const resp = await axios({
@@ -66,6 +80,7 @@ async function downloadFile(image_url, website_url) {
   }catch(Exception) {
     console.log(`❌ Error downloading the logo`);
     console.log(Exception);
+    
   }
 }
 
@@ -77,7 +92,7 @@ async function getLogoImagesFromURL(url) {
       headers: headersConfig
     });
     const $ = cheerio.load(data);
-  
+    
     // call another fucntion to try and fetch the logo by numerous tactics
     // tryFetchLogo data=> should return the path to the logo    
     const resp = await options.tryFetchLogo($, url)
@@ -93,7 +108,7 @@ async function getLogoImagesFromURL(url) {
   }catch(Exception) {
     // catch the exception me or the beloved js may throw
     console.log("❌ An error occured");
-    console.log(Exception);
+    // console.log(Exception);
 
     return false;
   }

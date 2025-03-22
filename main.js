@@ -52,7 +52,7 @@ function choose_option() {
     switch (option) {
       case "1":
         // readParquet()
-        f.getLogoImagesFromURL('https://ccusa.co.nz/')
+        f.getLogoImagesFromURL('https://www.mazda-autohaus-hellwig-hoyerswerda.de/')
         
         break;
 
