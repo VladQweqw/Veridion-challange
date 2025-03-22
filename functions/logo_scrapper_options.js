@@ -5,8 +5,8 @@ function priority0($) {
   let metaIcon = $(`meta[property="og:image"]`).attr("content");
   let twitterIcon = $(`meta[property="twitter:image"]`).attr("content");
 
-  if (relIcon) {
-    resp.data = relIcon;
+  if (relIcon) {    
+    resp.data = relIcon;    
     return resp;
   }
 
@@ -48,7 +48,7 @@ function priority1($, website_url) {
       
       const url = scanForLogo(order[idx], $, website_url);
       // if we found any logos, return them
-      if (url != null) {
+      if (url != null) {        
         resp.data = url;
         return resp;
       }
@@ -86,7 +86,7 @@ function scanForLogo(parent, $, url) {
   // if there is the case there is no image and no div with logo related ( note for website: please hire another developer ) we check the links and see which one is pointing to website domain
   
   for (let anchor of href_arr) {
-    const href = $(anchor).attr("href"); // get the src of the image
+    const href = $(anchor).attr("href"); // get the href 
     
     // if any href equals website domain i suppose it s a logo or home button, so we check for image files
     if(href === "#" || href === "/") { // for react and stuff like this which use single page
@@ -105,26 +105,19 @@ function scanForLogo(parent, $, url) {
 }
 
 async function tryFetchLogo($, url) {
-  const resp = { status: true, data: null }  
+  const logos_arr = [];
+
   const p0 = priority0($);  
-  const p1 = priority1($, url);
-  
   if (p0.status) {
-    resp.data = p0.data;    
-    console.log(`✅ Logo found in <head>`)
-    return resp;
+    logos_arr.push(p0.data)
   }
   
+  const p1 = priority1($, url);
   if(p1.status) {
-      resp.data = p1.data;
-      console.log(`✅ Logo found in header`)
-      return resp;
+     logos_arr.push(p1.data)
   }
 
-
-
-  resp.status = false;
-  return resp;
+  return logos_arr
 }
 
 module.exports = {

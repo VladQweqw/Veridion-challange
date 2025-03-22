@@ -19,28 +19,31 @@ const headersConfig = {
 }
 
 function correctImageURL(image_url, website_url) {
+  
   // a case where http is missing  
   if(image_url.startsWith("//")) {    
     image_url = "http:" + image_url;
-   
+    
     return image_url
   }
-
-
+  
+  
   // check if the logo url is relative e.g /etc/designs/logo .. if so append the website_url    
   if(!image_url.startsWith("http") && !image_url.startsWith("www")) {
-    image_url = website_url + image_url;
+    image_url = website_url + image_url.slice(image_url.indexOf("/"));
   }
+  
+  // if the logo is http://www.abc it means it a full valid path so we can return it
+  return image_url;
 }
 
 async function downloadFile(image_url, website_url) {
   // make sure the directory exists
-  utils.createDirectory(DIR_PATH);  
+  utils.createDirectory(DIR_PATH);    
   
   try {
     // check function comments
     image_url = correctImageURL(image_url, website_url)
-    console.log(image_url);
     
     // get the image as stream
     const resp = await axios({
@@ -66,7 +69,7 @@ async function downloadFile(image_url, website_url) {
 
       // if everything worked well display a message
       writer.on("finish", () => {
-        console.log("✅ Logo saved succesfully!");
+        console.log("|-> ✅ Logo saved succesfully!");
         resolve("SUCCESS")
       })
 
@@ -78,8 +81,8 @@ async function downloadFile(image_url, website_url) {
     
 
   }catch(Exception) {
-    console.log(`❌ Error downloading the logo`);
-    console.log(Exception);
+    console.log(`|-> ❌ Error downloading the logo`);
+    // console.log(Exception);
     
   }
 }
@@ -95,12 +98,24 @@ async function getLogoImagesFromURL(url) {
     
     // call another fucntion to try and fetch the logo by numerous tactics
     // tryFetchLogo data=> should return the path to the logo    
-    const resp = await options.tryFetchLogo($, url)
+    const logos_arr = await options.tryFetchLogo($, url)
+      
+    // if the array has any items in it means we have found something
+    if(logos_arr.length) {
+      // ui message
+      console.log(`🎉 Found ${logos_arr.length} logo${logos_arr.length > 1 ? "s" : ""}`)
 
-    // if the status is true it means we found a logo
-    if(resp.status) {
-      // loop over images only if there are any
-      return await downloadFile(resp.data, url)
+      // loop over images only if there are any   
+      for(let index in logos_arr) {        
+        console.log(`|-> 🐌 Trying to fetch logo ${(Number(index) + 1)}`);
+      
+        const state = await downloadFile(logos_arr[index], url);
+        
+        // if a logo was succesfully downlaoded we can stop downlaoding the rest
+        if(state === "SUCCESS") {
+          return 
+        };
+      }  
     }else {
       // otherwise we haven't
       console.log(`❌ No logo images for for ${url}`)
@@ -108,7 +123,7 @@ async function getLogoImagesFromURL(url) {
   }catch(Exception) {
     // catch the exception me or the beloved js may throw
     console.log("❌ An error occured");
-    // console.log(Exception);
+    console.log(Exception);
 
     return false;
   }

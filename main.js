@@ -51,8 +51,8 @@ function choose_option() {
   rl.question("\n[1] -> Fetch & download logos\n[2] -> Group logos\nOption: ", async (option) => {    
     switch (option) {
       case "1":
-        // readParquet()
-        f.getLogoImagesFromURL('https://www.mazda-autohaus-hellwig-hoyerswerda.de/')
+        readParquet()
+        // f.getLogoImagesFromURL('https://ccusa.co.nz/')
         
         break;
 

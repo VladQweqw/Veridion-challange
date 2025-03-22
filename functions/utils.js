@@ -21,12 +21,12 @@ function createDirectory(path) {
     try {
         if (!fs.existsSync(path)) {
             fs.mkdirSync(path, { recursive: true });
-            console.log("✅ Directory created");
+            console.log("|-> ✅ Directory created");
         } else {
-            console.log("✅ Directory already exists");
+            console.log("|-> ✅ Directory already exists");
         }
     } catch (err) {
-        console.log(`❌ ${err}`);
+        console.log(`|-> ❌ ${err}`);
     }
 }
 
