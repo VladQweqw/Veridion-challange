@@ -22,8 +22,8 @@ Clone the repo
 Install [NodeJS](https://nodejs.org/en)
    
 ```bash
-git clone https://github.com/yourusername/project-name.git
-cd project-name
+git clone https://github.com/VladQweqw/Veridion-challange
+cd Veridion-challange
 npm install
 node main.js
 ```
