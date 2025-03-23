@@ -6,17 +6,28 @@ const axios = require("axios")
 function getDomainFromURL(url) {
     // build in js function 
     const urlObj = new URL(url);
-
+    
     // getting the hostname from url
     return urlObj.hostname;
 }
 
 function getExtension(path) {
     // get the last . from path for example .abc.png 
-    const idx = path.lastIndexOf(".");
-
-    // then return from that index to end 
-    return path.slice(idx);
+    const start_idx = path.lastIndexOf(".");
+    let end_idx = start_idx;
+    
+    // so, if the url has some paramaterts to it like ?v=2312q3&x=213 we ignore them and get only the extension
+    for(end_idx = start_idx; end_idx < path.length; end_idx++) {
+        // using ascii table, we check for a-z and A-Z alphabet letter
+        let code = path.charCodeAt(end_idx);
+        if (!(code >= 65 && code <= 90) && !(code >= 97 && code <= 122)) {
+            // if we found somethign that isn't right, we break
+            break;
+        }
+    }
+    
+    // then return from that index to end     
+    return path.slice(start_idx, end_idx);
 
 }
 

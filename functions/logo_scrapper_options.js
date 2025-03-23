@@ -75,10 +75,11 @@ function priority1($, website_url) {
     nav
   ]
 
+
+
   for (let idx in order) {
     // if we found the element we're looking for scan it for logos inside
-    if (order[idx].length > 0) {
-      
+    if (order[idx].length > 0) {            
       const url = scanForLogo(order[idx], $, website_url);
       // if we found any logos, return them
       

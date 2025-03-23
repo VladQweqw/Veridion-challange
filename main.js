@@ -52,7 +52,7 @@ async function readParquet(retry = false) {
     const final_domain = "https://www." + record.domain;
   
     // download each logo locally
-    if(index > 5) break;
+    if(index > 99) break;
     console.log(`\n------- Website ${++index} -------`);
     
     console.log(`Checking ${final_domain}`);
@@ -66,7 +66,7 @@ async function readParquet(retry = false) {
     console.log("---------------------");
   }
 
-  console.log(`🚚 Summary: ${total_success}/${index} logos = ${Math.floor((total_success * 100) / index)}% success rate`);
+  console.log(`\n🚚 Summary: ${total_success}/${index} logos = ${Math.floor((total_success * 100) / index)}% success rate`);
 
   retry_failed_question()
   await reader.close();
@@ -77,18 +77,19 @@ function choose_option() {
   rl.question("\n[1] -> Fetch & download logos\n[2] -> Group logos\nOption: ", async (option) => {    
     switch (option) {
       case "1":
-        await readParquet()
-        // await f.getLogoImagesFromURL('https://www.bakertilly.lu/')
+        // await readParquet()
+        await f.getLogoImagesFromURL('https://www.tupperwarebrands.com/')
         // utils.getProperURL('https://www.ccusa.co.nz/')
         
         break;
 
       case "2":
-                
+          console.log("❌ Work in progress: ");
+          choose_option()
         break;
   
       default:
-        console.log("!!! Invalid option, please choose again: ");
+        console.log("❌ Invalid option, please choose again: ");
         choose_option()
         break;
       }  
@@ -97,11 +98,13 @@ function choose_option() {
 }
 
 function retry_failed_question() {
-  rl.question(`${failed_array.length} logo${failed_array.length > 1 ? "s" : ""} failed to be fetched, do you want to try again? Y/N\n`,
-    async (answer) => {
-      if(answer === "Y") {
+  rl.question(`❓ ${failed_array.length} logo${failed_array.length > 1 ? "s" : ""} failed to be fetched, do you want to try again? y/n\n`,
+
+    // make the answer lowercase for UX
+    async (answer = answer.toLocaleLowerCase()) => {
+      if(answer === "y") {
         await readParquet(true)
-      }else if(answer === "N") {
+      }else if(answer === "n") {
         choose_option();
       }else {
         console.log("Invalid option, choose again");
@@ -110,7 +113,6 @@ function retry_failed_question() {
     }
   )
 }
-
 
 // start
 console.log("=-=-=-= #1 Logo Similarity =-=-=-=");

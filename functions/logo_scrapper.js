@@ -11,12 +11,12 @@ const constants = require("./constants")
 
 function correctImageURL(image_url, website_url) {
   
-  // a case where http is missing  
-  if(image_url.startsWith("//")) {    
-    image_url = "http:" + image_url;
-    
+  // a case where http is missing    
+  if(image_url.startsWith("//")) {
+    image_url = "http:" + image_url;    
     return image_url
   }
+  
   
   
   // check if the logo url is relative e.g /etc/designs/logo .. if so append the website_url    
@@ -45,7 +45,8 @@ async function downloadFile(image_url, website_url) {
     })
     
     // create the save path
-    // dirname is /function, we need to go 1 dir up so "../logos_images" and the save name which is the domain of website + extension
+    // dirname is /function, we need to go 1 dir up so "../logos_images" and the save name which is the domain of website + extension        
+        
     const save_path = path.join(
       __dirname, 
       constants.SAVE_PATH, 
@@ -66,14 +67,13 @@ async function downloadFile(image_url, website_url) {
 
       // if there were erros throw Error and catch it later
       writer.on("error", (err) => {
-        reject("FAILED")
+        reject("|-> ❌ Error saving the logo")        
       })
     })
     
 
   }catch(Exception) {
-    console.log(`|-> ❌ Error downloading the logo`);    
-        
+    console.log(`|-> ❌ Error fetching the logo`);    
   }
 }
 
