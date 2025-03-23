@@ -16,13 +16,32 @@ const rl = readline.createInterface({
   output: process.stdout
 })
 
+// array to store the failed website url, failed in the sense that the logo couldn't be fetched
+const failed_array = [];
+
 // read the parquet file
-async function readParquet() {
-  let index = 1;
+async function readParquet(retry = false) {
+  let index = 0;
   let total_success = 0;
+
+  // if the user want to retry the fetch
+  if(retry) {
+    for(let website_url of failed_array) {
+      console.log(`\n------- Website ${index++} -------`);
+      console.log(`Checking ${website_url}`);
+
+      const resp = await f.getLogoImagesFromURL(website_url)
+      if(resp) {
+        total_success++;
+      } 
+      console.log("---------------------");
+    }
+
+    return retry_failed_question()
+  }
+
   // open the parquet
   const reader = await parquet.ParquetReader.openFile('./data/logos.parquet');
-
   // cursor meaning where it starts to read
   const cursor = reader.getCursor();
   let record = null;
@@ -33,20 +52,23 @@ async function readParquet() {
     const final_domain = "https://www." + record.domain;
   
     // download each logo locally
-    if(index > 99) break;
-    console.log(`\n------- Website ${index++} -------`);
+    if(index > 5) break;
+    console.log(`\n------- Website ${++index} -------`);
     
     console.log(`Checking ${final_domain}`);
     const resp = await f.getLogoImagesFromURL(final_domain)
+    
     if(resp) {
       total_success++;
+    }else {
+      failed_array.push(final_domain)
     }
     console.log("---------------------");
   }
 
   console.log(`🚚 Summary: ${total_success}/${index} logos = ${Math.floor((total_success * 100) / index)}% success rate`);
 
-  choose_option()
+  retry_failed_question()
   await reader.close();
 }
 
@@ -72,6 +94,21 @@ function choose_option() {
       }  
 
   });
+}
+
+function retry_failed_question() {
+  rl.question(`${failed_array.length} logo${failed_array.length > 1 ? "s" : ""} failed to be fetched, do you want to try again? Y/N\n`,
+    async (answer) => {
+      if(answer === "Y") {
+        await readParquet(true)
+      }else if(answer === "N") {
+        choose_option();
+      }else {
+        console.log("Invalid option, choose again");
+        retry_failed_question();
+      }
+    }
+  )
 }
 
 
