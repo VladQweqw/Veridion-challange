@@ -31,7 +31,7 @@ function correctImageURL(image_url, website_url) {
 async function downloadFile(image_url, website_url) {
   // make sure the directory exists
   utils.createDirectory(constants.DIR_PATH);    
-
+  
   try {
     // check function comments
     image_url = correctImageURL(image_url, website_url)
@@ -72,7 +72,8 @@ async function downloadFile(image_url, website_url) {
     
 
   }catch(Exception) {
-    console.log(`|-> ❌ Error downloading the logo`);        
+    console.log(`|-> ❌ Error downloading the logo`);    
+        
   }
 }
 
@@ -88,7 +89,7 @@ async function getLogoImagesFromURL(url) {
     // call another fucntion to try and fetch the logo by numerous tactics
     // tryFetchLogo data=> should return the path to the logo    
     const logos_arr = await options.tryFetchLogo($, url)
-      
+    
     // if the array has any items in it means we have found something
     if(logos_arr.length) {
       // ui message
@@ -97,7 +98,7 @@ async function getLogoImagesFromURL(url) {
       // loop over images only if there are any   
       for(let index in logos_arr) {        
         console.log(`|-> 🐌 Trying to fetch logo ${(Number(index) + 1)}`);
-      
+        
         const state = await downloadFile(logos_arr[index], url);
         
         // if a logo was succesfully downlaoded we can stop downlaoding the rest
@@ -115,7 +116,7 @@ async function getLogoImagesFromURL(url) {
       console.log("😔 Access not permitted");
     }else {
       console.log("❌ An error occured");
-      console.log(Exception);
+      // console.log(Exception);
       
     }
 

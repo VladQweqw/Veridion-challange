@@ -1,25 +1,58 @@
+const utils = require("../functions/utils")
+
+// priority 0 aka head scanning
 function priority0($) {
   const resp = { status: true, data: null }
+  let linkArray = $(`link`).toArray();
+  let href_probability = null;
+  
+  for(let link of linkArray) {      
+    // if the rel matches one of these, it means it's a logo
+    const valids = ["apple_touch_icon", "icon", "logo", ]
 
-  let relIcon = $(`link[rel="icon"]`).attr("href");
+    const link_href = $(link).attr('href')
+    const link_rel = $(link).attr('rel')
+    
+    // if at least one of them is valid, it s good
+    if(valids.some((e) => link_rel.includes(e))) {      
+      resp.data = link_href
+      break;
+    }else if(link_href.slice(-4) === ".ico") {
+      // as a last measure, if one of the href's has the .ico extension probably it's a logo
+      // we don't want to return it asap, only if the first one fails, we can try with one of these
+    
+      href_probability = link_href
+    }
+  }
+
+  // if we found osmethign in the link tags return it asap
+  if(resp.data) {
+    return resp;
+  }
+  
   let metaIcon = $(`meta[property="og:image"]`).attr("content");
   let twitterIcon = $(`meta[property="twitter:image"]`).attr("content");
 
-  if (relIcon) {    
-    resp.data = relIcon;    
-    return resp;
-  }
-
+  // if we found something in meta return it an so on
   if (metaIcon) {
     resp.data = metaIcon;
     return resp;
   }
 
+  // if we found something in meta return it an so on
   if (twitterIcon) {
     resp.data = twitterIcon;
     return resp;
   }
 
+
+  // if nothing was found, return the href_probability in worst case is null as before or somethign
+  if(resp.data == null && href_probability != null) {
+    resp.data = href_probability
+    return resp;
+  }
+
+  // return false case
   resp.status = false
   return resp;
 }
@@ -48,7 +81,8 @@ function priority1($, website_url) {
       
       const url = scanForLogo(order[idx], $, website_url);
       // if we found any logos, return them
-      if (url != null) {        
+      
+      if (url != null && url != undefined) {                
         resp.data = url;
         return resp;
       }
@@ -62,14 +96,11 @@ function priority1($, website_url) {
   return resp;
 }
 
-function priority2($) {
-
-}
-
 function scanForLogo(parent, $, url) {
   // convert to an array
   const images_arr = parent.find("img").toArray();
   const href_arr = parent.find("a").toArray();
+  let flag = true;
 
   // of -> return the element, in -> index
   for (let image of images_arr) {
@@ -91,19 +122,30 @@ function scanForLogo(parent, $, url) {
     const href = $(anchor).attr("href"); // get the href 
     
     // if any href equals website domain i suppose it s a logo or home button, so we check for image files
+    
     if(href === "#" || href === "/") { // for react and stuff like this which use single page
       const img_src = $(anchor).find("img").attr("src");
-
-      return img_src;
+      if(!img_src) {
+        if(flag) {
+          console.log("❌ One or more logos may be background images, unable to fetch");
+          flag = false;
+        }
+        
+        // code to fetch from background
+      }else {
+        return img_src;
+      }
     }
-
-    if(href.startsWith("http") && url.startsWith("http")) {
-      if (new URL(href)?.href === new URL(url)?.href) {
+    
+    if(href.startsWith("http") && url.startsWith("http")) {    
+      // appparently URL inbuild function doesnt do what i want
+      if(utils.isSameURL(href, url)) {
         const img_src = $(anchor).find("img").attr("src");
         return img_src;
       }
     }
   }
+
   // if nothing is found we retur null
   return null;
 }
@@ -111,12 +153,12 @@ function scanForLogo(parent, $, url) {
 async function tryFetchLogo($, url) {
   const logos_arr = [];
 
-  const p0 = priority0($);  
+  const p0 = priority0($);    
   if (p0.status) {
     logos_arr.push(p0.data)
   }
   
-  const p1 = priority1($, url);
+  const p1 = priority1($, url);  
   if(p1.status) {
      logos_arr.push(p1.data)
   }
@@ -126,5 +168,4 @@ async function tryFetchLogo($, url) {
 
 module.exports = {
   tryFetchLogo,
-  
 }

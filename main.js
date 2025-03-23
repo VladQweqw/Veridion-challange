@@ -10,7 +10,7 @@ const f = require("./functions/logo_scrapper")
 
 const utils = require("./functions/utils")
 
-// default configuration
+// default configuration for reading console input
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
@@ -56,8 +56,8 @@ function choose_option() {
     switch (option) {
       case "1":
         await readParquet()
+        // await f.getLogoImagesFromURL('https://www.bakertilly.lu/')
         // utils.getProperURL('https://www.ccusa.co.nz/')
-        await f.getLogoImagesFromURL('https://ccusa.co.nz/')
         
         break;
 

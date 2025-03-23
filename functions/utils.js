@@ -59,9 +59,17 @@ async function getProperURL(url) {
     return http;
 }
 
+function isSameURL(url_1, url_2) {
+    url_1 = url_1.replace("www.", "")
+    url_2 = url_2.replace("www.", "")
+    
+    return url_1 === url_2;
+}
+
 module.exports = {
     getDomainFromURL,
     getExtension,
     createDirectory,
-    getProperURL
+    getProperURL,
+    isSameURL
 }
