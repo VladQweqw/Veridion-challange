@@ -19,25 +19,45 @@ const rl = readline.createInterface({
 // array to store the failed website url, failed in the sense that the logo couldn't be fetched
 const failed_array = [];
 
+async function tryOrGetLogo(webiste_url, index) {
+  console.log(`\n------- Website ${index} -------`);
+  console.log(`Checking ${webiste_url}`);
+
+  let resp;
+  try {
+    resp = await Promise.race([
+      f.getLogoImagesFromURL(webiste_url),
+      utils.timeoutPromise(),
+    ])
+
+    return resp
+  } catch (error) {
+    console.log(`${error}`);
+  }
+
+  console.log("---------------------");
+  return false
+}
+
 // read the parquet file
 async function readParquet(retry = false) {
-  let index = 0;
+  let index = 1;
   let total_success = 0;
 
   // if the user want to retry the fetch
-  if(retry) {
-    for(let website_url of failed_array) {
-      console.log(`\n------- Website ${index++} -------`);
-      console.log(`Checking ${website_url}`);
+  if (retry) {
+    for (let website_url of failed_array) {
+      const state = await tryOrGetLogo(website_url, index++)
 
-      const resp = await f.getLogoImagesFromURL(website_url)
-      if(resp) {
+      if (state) {
         total_success++;
-      } 
-      console.log("---------------------");
-    }
+      } else {
+        // otherwise add it to failed array
+        failed_array.push(final_domain)
+      }
 
-    return retry_failed_question()
+      return retry_failed_question()
+    }
   }
 
   // open the parquet
@@ -45,27 +65,27 @@ async function readParquet(retry = false) {
   // cursor meaning where it starts to read
   const cursor = reader.getCursor();
   let record = null;
-  
+
   // while there is data, we read it
   while (record = await cursor.next()) {
     // data stored as { domain: string }
     const final_domain = "https://www." + record.domain;
-  
-    // download each logo locally
-    if(index > 99) break;
-    console.log(`\n------- Website ${++index} -------`);
-    
-    console.log(`Checking ${final_domain}`);
-    const resp = await f.getLogoImagesFromURL(final_domain)
-    
-    if(resp) {
+
+    if (index > 99) break;
+
+    // call the function to get logos
+    const state = await tryOrGetLogo(final_domain, index++)
+
+    // if the logo was downloded succesfully count it
+    if (state) {
       total_success++;
-    }else {
+    } else {
+      // otherwise add it to failed array
       failed_array.push(final_domain)
     }
-    console.log("---------------------");
   }
 
+  // summary message
   console.log(`\n🚚 Summary: ${total_success}/${index} logos = ${Math.floor((total_success * 100) / index)}% success rate`);
 
   retry_failed_question()
@@ -74,25 +94,25 @@ async function readParquet(retry = false) {
 
 // option chooser
 function choose_option() {
-  rl.question("\n[1] -> Fetch & download logos\n[2] -> Group logos\nOption: ", async (option) => {    
+  rl.question("\n[1] -> Fetch & download logos\n[2] -> Group logos\nOption: ", async (option) => {
     switch (option) {
       case "1":
-        // await readParquet()
-        await f.getLogoImagesFromURL('https://www.tupperwarebrands.com/')
+        await readParquet()
+        // await f.getLogoImagesFromURL('https://wurthsaudi.com/')
         // utils.getProperURL('https://www.ccusa.co.nz/')
-        
+
         break;
 
       case "2":
-          console.log("❌ Work in progress: ");
-          choose_option()
+        console.log("❌ Work in progress: ");
+        choose_option()
         break;
-  
+
       default:
         console.log("❌ Invalid option, please choose again: ");
         choose_option()
         break;
-      }  
+    }
 
   });
 }
@@ -102,11 +122,11 @@ function retry_failed_question() {
 
     // make the answer lowercase for UX
     async (answer = answer.toLocaleLowerCase()) => {
-      if(answer === "y") {
+      if (answer === "y") {
         await readParquet(true)
-      }else if(answer === "n") {
+      } else if (answer === "n") {
         choose_option();
-      }else {
+      } else {
         console.log("Invalid option, choose again");
         retry_failed_question();
       }

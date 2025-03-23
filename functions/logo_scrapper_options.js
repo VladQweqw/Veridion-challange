@@ -136,9 +136,9 @@ function scanForLogo(parent, $, url) {
       }else {
         return img_src;
       }
-    }
+    }    
     
-    if(href.startsWith("http") && url.startsWith("http")) {    
+    if(href?.startsWith("http") && url?.startsWith("http")) {    
       // appparently URL inbuild function doesnt do what i want
       if(utils.isSameURL(href, url)) {
         const img_src = $(anchor).find("img").attr("src");
@@ -154,7 +154,7 @@ function scanForLogo(parent, $, url) {
 async function tryFetchLogo($, url) {
   const logos_arr = [];
 
-  const p0 = priority0($);    
+  const p0 = priority0($);      
   if (p0.status) {
     logos_arr.push(p0.data)
   }

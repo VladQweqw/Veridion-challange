@@ -13,15 +13,21 @@ function correctImageURL(image_url, website_url) {
   
   // a case where http is missing    
   if(image_url.startsWith("//")) {
-    image_url = "http:" + image_url;    
+    image_url = "http:" + image_url;   
+    console.log(image_url);
+     
     return image_url
   }
-  
-  
+  console.log(website_url);
   
   // check if the logo url is relative e.g /etc/designs/logo .. if so append the website_url    
   if(!image_url.startsWith("http") && !image_url.startsWith("www")) {
-    image_url = website_url + image_url.slice(image_url.indexOf("/"));
+    // some urls have the relative path like assets/.. so we need to take care of this as well
+    if(image_url.startsWith("..")) {
+      image_url = website_url + image_url.slice(image_url.indexOf("/"));
+    }else {
+      image_url = website_url + image_url;
+    }
   }
   
   // if the logo is http://www.abc it means it a full valid path so we can return it
@@ -35,6 +41,7 @@ async function downloadFile(image_url, website_url) {
   try {
     // check function comments
     image_url = correctImageURL(image_url, website_url)
+    console.log(image_url);
     
     // get the image as stream
     const resp = await axios({
@@ -116,7 +123,6 @@ async function getLogoImagesFromURL(url) {
       console.log("😔 Access not permitted");
     }else {
       console.log("❌ An error occured");
-      // console.log(Exception);
       
     }
 

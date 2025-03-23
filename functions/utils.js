@@ -14,18 +14,18 @@ function getDomainFromURL(url) {
 function getExtension(path) {
     // get the last . from path for example .abc.png 
     const start_idx = path.lastIndexOf(".");
-    let end_idx = start_idx;
+    let end_idx = path.length - 1;
     
     // so, if the url has some paramaterts to it like ?v=2312q3&x=213 we ignore them and get only the extension
-    for(end_idx = start_idx; end_idx < path.length; end_idx++) {
+    for(end_idx = start_idx + 1; end_idx < path.length; end_idx++) {
         // using ascii table, we check for a-z and A-Z alphabet letter
-        let code = path.charCodeAt(end_idx);
+        let code = path.charCodeAt(end_idx);        
         if (!(code >= 65 && code <= 90) && !(code >= 97 && code <= 122)) {
             // if we found somethign that isn't right, we break
             break;
         }
     }
-    
+      
     // then return from that index to end     
     return path.slice(start_idx, end_idx);
 
@@ -77,10 +77,17 @@ function isSameURL(url_1, url_2) {
     return url_1 === url_2;
 }
 
+function timeoutPromise() {
+    return new Promise((res, reject) => {
+      setTimeout(() => reject("|-> ⌛ Max time reached"), 5000)
+    })
+  }
+
 module.exports = {
     getDomainFromURL,
     getExtension,
     createDirectory,
     getProperURL,
-    isSameURL
+    isSameURL,
+    timeoutPromise
 }
