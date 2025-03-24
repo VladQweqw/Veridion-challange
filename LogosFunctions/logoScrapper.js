@@ -5,6 +5,7 @@ const path = require("path");
 
 // import utils module
 const helper = require("./helperFunctions")
+const helperGroup = require("../GroupFunction/groupHelper")
 const priorities = require("./logoPriorities")
 
 // constants
@@ -12,11 +13,14 @@ const constants = require("../utils/constants")
 
 async function downloadFile(image_url, website_url) {
   // make sure the directory exists
-  helper.createDirectory(constants.LOGO_DIR_PATH);    
-  
+  const state = helperGroup.makeSureFolderExists(constants.LOGO_DIR_PATH);    
+  if(state) {
+    console.log(`|-> ✅ Directory logos is valid`);
+  }
+
   try {
     // check function comments
-    image_url = correctImageURL(image_url, website_url)
+    image_url = helper.correctImageURL(image_url, website_url)
     console.log(image_url);
     
     // get the image as stream
@@ -56,7 +60,7 @@ async function downloadFile(image_url, website_url) {
     
 
   }catch(Exception) {
-    console.log(`|-> ❌ Error fetching the logo`);    
+    console.log(`|-> ❌ Error fetching the logo`);        
   }
 }
 

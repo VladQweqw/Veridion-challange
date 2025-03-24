@@ -31,19 +31,6 @@ function getExtension(path) {
 
 }
 
-function createDirectory(path) {
-    try {
-        if (!fs.existsSync(path)) {
-            fs.mkdirSync(path, { recursive: true });
-            console.log("|-> ✅ Directory created");
-        } else {
-            console.log("|-> ✅ Directory already exists");
-        }
-    } catch (err) {
-        console.log(`|-> ❌ ${err}`);
-    }
-}
-
 async function getProperURL(url) {
     const https_www = "https://www." + url;
     const https = "https://" + url;
@@ -110,7 +97,6 @@ function correctImageURL(image_url, website_url) {
 module.exports = {
     getDomainFromURL,
     getExtension,
-    createDirectory,
     getProperURL,
     isSameURL,
     timeoutPromise,
