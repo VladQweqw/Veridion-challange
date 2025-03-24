@@ -95,7 +95,7 @@ async function readParquet(retry = false) {
   }
 
   // summary message
-  console.log(`\n🚚 Summary: ${total_success}/${index} logos = ${Math.floor((total_success * 100) / index)}% success rate`);
+  console.log(`\n🚚 Summary: ${total_success}/${index} logos (${Math.floor((total_success * 100) / index)}%)`);
 
   RetryFailedQuestion()
   await reader.close();
