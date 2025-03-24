@@ -73,12 +73,9 @@ function timeoutPromise() {
 function correctImageURL(image_url, website_url) {
     // a case where http is missing    
     if(image_url.startsWith("//")) {
-      image_url = "http:" + image_url;   
-      console.log(image_url);
-       
+      image_url = "http:" + image_url;          
       return image_url
     }
-    console.log(website_url);
     
     // check if the logo url is relative e.g /etc/designs/logo .. if so append the website_url    
     if(!image_url.startsWith("http") && !image_url.startsWith("www")) {
