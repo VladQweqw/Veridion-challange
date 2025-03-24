@@ -12,7 +12,7 @@ const constants = require("../utils/constants")
 
 async function downloadFile(image_url, website_url) {
   // make sure the directory exists
-  helper.createDirectory(constants.DIR_PATH);    
+  helper.createDirectory(constants.LOGO_DIR_PATH);    
   
   try {
     // check function comments
@@ -30,14 +30,14 @@ async function downloadFile(image_url, website_url) {
     // create the save path
     // dirname is /function, we need to go 1 dir up so "../logos_images" and the save name which is the domain of website + extension        
         
-    const save_path = path.join(
+    const LOGO_DIR_NAME = path.join(
       __dirname, 
-      constants.SAVE_PATH, 
+      constants.LOGO_DIR_NAME, 
       helper.getDomainFromURL(website_url) + helper.getExtension(image_url)
     )
     
-    // pass the save_path to writeStream and save the file
-    const writer = fs.createWriteStream(save_path);
+    // pass the LOGO_DIR_NAME to writeStream and save the file
+    const writer = fs.createWriteStream(LOGO_DIR_NAME);
 
     return new Promise((resolve, reject) => {
       resp.data.pipe(writer);

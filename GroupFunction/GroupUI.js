@@ -8,22 +8,22 @@ const designType = require("./groupByDesign")
 const companyType = require("./groupByCompany")
 
 function groupQuestion(rl) {
-    rl.question(`\nGroup files by:\n[1] File type\n[2] Color\n[3] Company tags\nOption: `, (answer) => {
-  
+    rl.question(`\nGroup files by:\n[1] File type\n[2] Color\n[3] Company tags\nOption: `, async (answer) => {
+      
       switch (answer) {
         case "1":
-          fileType.group();
-          groupQuestion();
+          await fileType.group();
+          groupQuestion(rl);
         break;
   
         case "2":
           designType.group();
-          groupQuestion();
+          groupQuestion(rl);
         break;
   
         case "3":
           companyType.group();
-          groupQuestion();
+          groupQuestion(rl);
         break;
   
         default:

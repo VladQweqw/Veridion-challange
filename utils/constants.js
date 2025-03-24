@@ -8,11 +8,13 @@ const headersConfig = {
 // default image saving location
 const path = require("path");
 
-const SAVE_PATH = '../logos/';
-const DIR_PATH = path.join(__dirname, "..", "logos")
+const LOGO_DIR_NAME = '../logos/';
+const GROUP__DIR_PATH = path.join(__dirname, "..", "groupped")
+const LOGO_DIR_PATH = path.join(__dirname, "..", "logos")
 
 module.exports = {
     headersConfig,
-    SAVE_PATH,
-    DIR_PATH
+    LOGO_DIR_NAME,
+    LOGO_DIR_PATH,
+    GROUP__DIR_PATH
 }
