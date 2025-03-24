@@ -1,7 +1,7 @@
 // library for reading parquet files
 const parquet = require('parquetjs-lite');
 
-const f = require("./logo_scrapper")
+const f = require("./logoScrapper")
 const helper = require("./helperFunctions");
 const path = require("path")
 

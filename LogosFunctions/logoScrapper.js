@@ -5,7 +5,7 @@ const path = require("path");
 
 // import utils module
 const helper = require("./helperFunctions")
-const priorities = require("./logo_priorities")
+const priorities = require("./logoPriorities")
 
 // constants
 const constants = require("../utils/constants")

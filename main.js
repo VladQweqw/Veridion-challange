@@ -2,7 +2,7 @@
 const readline = require("readline");
 
 // library with secondary functions to keep main file clean
-const groupFunctions = require("./GroupFunction/groupLogos")
+const groupFunctions = require("./GroupFunction/GroupUI")
 const logoFunctions = require("./LogosFunctions/LogosUI")
 
 // default configuration for reading console input
@@ -22,7 +22,7 @@ function start() {
         break;
 
       case "2":
-        groupFunctions.groupQuestion();
+        groupFunctions.groupQuestion(rl);
         break;
 
       default:
