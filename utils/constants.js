@@ -5,13 +5,11 @@ const headersConfig = {
     'Accept-Language': 'en-US,en;q=0.9',
 }
 
-
 // default image saving location
 const path = require("path");
 
 const SAVE_PATH = '../logos/';
 const DIR_PATH = path.join(__dirname, "..", "logos")
-
 
 module.exports = {
     headersConfig,

@@ -1,5 +1,7 @@
-const utils = require("../functions/utils")
+// helper functions
+const helper = require("./helperFunctions")
 
+// 0 - 2, 0 being highest priority 
 // priority 0 aka head scanning
 function priority0($) {
   const resp = { status: true, data: null }
@@ -75,8 +77,6 @@ function priority1($, website_url) {
     nav
   ]
 
-
-
   for (let idx in order) {
     // if we found the element we're looking for scan it for logos inside
     if (order[idx].length > 0) {            
@@ -140,7 +140,7 @@ function scanForLogo(parent, $, url) {
     
     if(href?.startsWith("http") && url?.startsWith("http")) {    
       // appparently URL inbuild function doesnt do what i want
-      if(utils.isSameURL(href, url)) {
+      if(helper.isSameURL(href, url)) {
         const img_src = $(anchor).find("img").attr("src");
         return img_src;
       }
@@ -151,22 +151,26 @@ function scanForLogo(parent, $, url) {
   return null;
 }
 
-async function tryFetchLogo($, url) {
+// returns an array of urls from logos.
+async function getWebsiteLogos($, url) {
   const logos_arr = [];
 
+  // scanning the head
   const p0 = priority0($);      
   if (p0.status) {
     logos_arr.push(p0.data)
   }
   
+  // scanning the header, navbar ..
   const p1 = priority1($, url);  
   if(p1.status) {
      logos_arr.push(p1.data)
   }
 
+  // return the array, it can be an empty one
   return logos_arr
 }
 
 module.exports = {
-  tryFetchLogo,
+  getWebsiteLogos,
 }

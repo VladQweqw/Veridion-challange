@@ -1,5 +1,5 @@
 const fs = require("fs");
-const headersConfig = require("./constants");
+const headersConfig = require("../utils/constants");
 const axios = require("axios")
 
 
@@ -81,7 +81,31 @@ function timeoutPromise() {
     return new Promise((res, reject) => {
       setTimeout(() => reject("|-> ⌛ Max time reached"), 5000)
     })
-  }
+}
+
+function correctImageURL(image_url, website_url) {
+    // a case where http is missing    
+    if(image_url.startsWith("//")) {
+      image_url = "http:" + image_url;   
+      console.log(image_url);
+       
+      return image_url
+    }
+    console.log(website_url);
+    
+    // check if the logo url is relative e.g /etc/designs/logo .. if so append the website_url    
+    if(!image_url.startsWith("http") && !image_url.startsWith("www")) {
+      // some urls have the relative path like assets/.. so we need to take care of this as well
+      if(image_url.startsWith("..")) {
+        image_url = website_url + image_url.slice(image_url.indexOf("/"));
+      }else {
+        image_url = website_url + image_url;
+      }
+    }
+    
+    // if the logo is http://www.abc it means it a full valid path so we can return it
+    return image_url;
+}
 
 module.exports = {
     getDomainFromURL,
@@ -89,5 +113,6 @@ module.exports = {
     createDirectory,
     getProperURL,
     isSameURL,
-    timeoutPromise
+    timeoutPromise,
+    correctImageURL
 }
