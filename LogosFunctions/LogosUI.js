@@ -1,9 +1,19 @@
 // library for reading parquet files
 const parquet = require('parquetjs-lite');
 
+// library for reading console input from user
+const readline = require("readline");
+const path = require("path")
+
+// 
 const f = require("./logoScrapper")
 const helper = require("./helperFunctions");
-const path = require("path")
+
+// default configuration for reading console input
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+})
 
 // array to store the failed website url, failed in the sense that the logo couldn't be fetched
 const failed_array = [];
@@ -82,7 +92,6 @@ async function readParquet(retry = false) {
 
     // call the function to get logos
     const state = await CheckingWebsite(final_domain, index++)
-
     // if the logo was downloded succesfully count it
     if (state) {
       total_success++;
