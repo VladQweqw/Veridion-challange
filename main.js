@@ -16,9 +16,7 @@ function start() {
   rl.question("\n[1] -> Fetch & download logos\n[2] -> Group logos\nOption: ", async (option) => {
     switch (option) {
       case "1":
-        await logoFunctions.readParquet()
-        // await f.getLogoImagesFromURL('https://wurthsaudi.com/')
-        // utils.getProperURL('https://www.ccusa.co.nz/')
+        await logoFunctions.readParquet(rl)
         break;
 
       case "2":

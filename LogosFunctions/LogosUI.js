@@ -1,24 +1,16 @@
 // library for reading parquet files
 const parquet = require('parquetjs-lite');
 
-// library for reading console input from user
-const readline = require("readline");
 const path = require("path")
 
 // 
 const f = require("./logoScrapper")
 const helper = require("./helperFunctions");
 
-// default configuration for reading console input
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-})
-
 // array to store the failed website url, failed in the sense that the logo couldn't be fetched
 const failed_array = [];
 
-async function CheckingWebsite(webiste_url, index) {
+async function CheckingWebsite(webiste_url, index, rl) {
   console.log(`\n------- Website ${index} -------`);
   console.log(`Checking ${webiste_url}`);
 
@@ -36,7 +28,7 @@ async function CheckingWebsite(webiste_url, index) {
   return false
 }
 
-function RetryFailedQuestion() {
+function RetryFailedQuestion(rl) {
   rl.question(`❓ ${failed_array.length} logo${failed_array.length > 1 ? "s" : ""} failed to be fetched, do you want to try again? y/n\n`,
 
     // make the answer lowercase for UX
@@ -54,7 +46,7 @@ function RetryFailedQuestion() {
 }
 
 // read the parquet file
-async function readParquet(retry = false) {
+async function readParquet(retry = false, rl) {
   let index = 1;
   let total_success = 0;
 
@@ -70,7 +62,7 @@ async function readParquet(retry = false) {
         failed_array.push(final_domain)
       }
 
-      return RetryFailedQuestion();
+      return RetryFailedQuestion(rl);
     }
   }
 
@@ -104,7 +96,7 @@ async function readParquet(retry = false) {
   // summary message
   console.log(`\n🚚 Summary: ${total_success}/${index} logos (${Math.floor((total_success * 100) / index)}%)`);
 
-  RetryFailedQuestion()
+  RetryFailedQuestion(rl)
   await reader.close();
 }
 
