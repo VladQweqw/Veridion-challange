@@ -5,6 +5,8 @@ const designType = require("./groupByDesign")
 // group by import, the wrapper function
 const { groupBy } = require("./groupBy");
 
+const groupHelper = require("./groupHelper")
+
 // company tags group
 const companyType = require("./groupByCompany")
 

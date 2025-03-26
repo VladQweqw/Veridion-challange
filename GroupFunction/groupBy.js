@@ -31,21 +31,24 @@ async function groupBy(cb, fileTypeDir) {
                 }else {
                     // count the files found
                     console.log(`✅ Found ${files.length} files`);
-                    
-                    // lopp through each one
-                    for(let file of files) {                                    
+                
+                    // loop through each one
+                    for(let file of files) {         
+                        // create a loading message, that replace itself every loop, because of \r
+                        process.stdout.write(`⌛ Loading ${Math.floor((fileCount * 100) / files.length)}%\r`)
+                        // get the state of grouping process
                         const SUCCESS = await cb(file);
                         
                         // if we we're able to move the file, increment succes
                         if(SUCCESS) {
                             succesMoved++;
                         }
-    
+                        
                         // increment fileCount no matter what
                         fileCount++
                     }
                     // summary print + resolve(true)
-                    console.log(`🚚 Summary: ${succesMoved}/${fileCount} logos groupped by File Type (${Math.floor((succesMoved * 100) / fileCount)}%)`);
+                    console.log(`🚚 Summary: ${succesMoved}/${fileCount} logos groupped by ${fileTypeDir} (${Math.floor((succesMoved * 100) / fileCount)}%)`);
                     resolve(true)
                 }
             })
