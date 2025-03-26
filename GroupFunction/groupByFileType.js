@@ -7,7 +7,7 @@ const helper = require("./groupHelper")
 const constants = require("../utils/constants");
 
 async function group(file) {
-    const fileTypeDir = constants.GROUP__DIR_PATH + path.sep + "Design"
+    const fileTypeDir = constants.GROUP__DIR_PATH + path.sep + "FileType"
     
     // get and create info from file
     const extension = path.extname(file).toLocaleLowerCase(); // extension from the file like .png etc

@@ -55,6 +55,7 @@ const rgbToHsl = (r, g, b) => {
     ];
 };
 
+// function to convert from RGB 123, 213,312 to a color name like Red, blue, green
 function convertColorCodeToWords(rgb_pallete) {
     // a color pallete looks like [12,421,421] -> RGB format
     // convert RGB palette to HSL ( easier )
@@ -71,6 +72,7 @@ function convertColorCodeToWords(rgb_pallete) {
 
     // the color wheel colors ROGVAIV
     // return colors
+    // threshold is a range of values for the hue, if a colors is between that range it means it that color +-, based on my eyes. this is very accurate but does a pretty good job overall
     const colors = [
         {
             threshold: {
@@ -136,13 +138,21 @@ function convertColorCodeToWords(rgb_pallete) {
             color: "Red"
         },
     ]
+    
+    // if the lightness is very low, the color should be black
+    if(lightness <= 15) return "Black"
+    // if the saturation is low nad hue is low as ewll, meaning is on the top right corner of the color pciker, and the lightness is very high it means it s a white
+    if(hue < 15 && saturation < 15 && lightness > 75) return "White" 
 
-    if(saturation <= 10) {
+    // if the color is less saturate we can checl om which part the lightness go, if it's high its white and vice versa
+    // if it's in between it's gray
+    if(saturation <= 15) {
         if(lightness > 90) return "White"
         if(lightness < 10) return "Black"
         return "Gray"
     }
 
+    // build in find method to retreive the color that is between the threshold
     const match = colors.find((color) => {
         const min = color.threshold.min;
         const max = color.threshold.max;
@@ -152,6 +162,7 @@ function convertColorCodeToWords(rgb_pallete) {
         }
     })
 
+    // return the match.color or null
     return match?.color || null;
 }
 

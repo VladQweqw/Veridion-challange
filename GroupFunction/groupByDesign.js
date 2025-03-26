@@ -19,12 +19,16 @@ async function group(file) {
         rgb_palettes = await ColorThief.getPalette(image_location, 2)
         if(rgb_palettes.length <= 0) return false;
     } catch (err) {
-        // if there was an error simply return false
+        // if there was an error simply return false        
         return false;
     }
-
+    // by having 2 palletes The program doens't miss any colors, by testing using only 1 palette would miss some important colors so 2 palletes are good
+    // not all logos will have 2 palletes !!
     for (let palette of rgb_palettes) {
+        // use a classic for because async and await ( asynconomous ) fucntions doesnt work inside foreach
+        // get the colorName fro mthe helper function 
         const color = helper.convertColorCodeToWords(palette);
+        // an error case, for bad logo images
         if(!color) return false;
         
         // get and create info from file
@@ -60,6 +64,9 @@ async function group(file) {
         }
     }
 
+    // final return the status
+    // if all images got selected by pallete and moved return true, 
+    // if only 1 or none return false
     return flag;
 }
 

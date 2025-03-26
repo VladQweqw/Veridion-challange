@@ -12,14 +12,12 @@ async function CheckingWebsite(webiste_url, index) {
   console.log(`\n------- Website ${index} -------`);
   console.log(`Checking ${webiste_url}`);
 
-  let resp;
   try {
-    resp = await Promise.race([
+    // await for the response, returning HTML page
+    return await Promise.race([
       f.getWebsiteHTML(webiste_url),
       helper.timeoutPromise(),
     ])
-
-    return resp
   } catch (error) {
     console.log(`${error}`);
   }

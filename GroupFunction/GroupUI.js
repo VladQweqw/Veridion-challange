@@ -5,13 +5,9 @@ const designType = require("./groupByDesign")
 // group by import, the wrapper function
 const { groupBy } = require("./groupBy");
 
-const groupHelper = require("./groupHelper")
-
-// company tags group
-const companyType = require("./groupByCompany")
-
+// this function is the interface from where the user can select what type of grouping he wants
 function groupQuestion(rl) {
-    rl.question(`\nGroup files by:\n[1] File type\n[2] Color\n[3] Company tags\nOption: `, async (answer) => {
+    rl.question(`\nGroup files by:\n[1] File type\n[2] Color\nOption: `, async (answer) => {
       
       switch (answer) {
         case "1":
@@ -21,11 +17,6 @@ function groupQuestion(rl) {
   
         case "2":
           await groupBy(designType.group, "Design");
-          groupQuestion(rl);
-        break;
-  
-        case "3":
-          companyType.group();
           groupQuestion(rl);
         break;
   
