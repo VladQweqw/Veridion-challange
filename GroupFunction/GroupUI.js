@@ -1,8 +1,9 @@
-// file type group
+// different groupping types imports
 const fileType = require("./groupByFileType")
-
-// logo design group
 const designType = require("./groupByDesign")
+
+// group by import, the wrapper function
+const { groupBy } = require("./groupBy");
 
 // company tags group
 const companyType = require("./groupByCompany")
@@ -12,12 +13,12 @@ function groupQuestion(rl) {
       
       switch (answer) {
         case "1":
-          await fileType.group();
+          await groupBy(fileType.group, "FileType");
           groupQuestion(rl);
         break;
   
         case "2":
-          designType.group();
+          await groupBy(designType.group, "Design");
           groupQuestion(rl);
         break;
   

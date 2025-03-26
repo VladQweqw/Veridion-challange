@@ -21,7 +21,6 @@ async function downloadFile(image_url, website_url) {
   try {
     // check function comments
     image_url = helper.correctImageURL(image_url, website_url)
-    console.log(image_url);
     
     // get the image as stream
     const resp = await axios({

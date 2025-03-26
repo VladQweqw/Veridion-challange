@@ -33,6 +33,21 @@ function makeSureFolderExists(dir_path, displayMessages = false){
     }
 }
 
+function convertColorCodeToWords(color_pallete) {
+    // a color pallete looks like [12,421,421] -> RGB format
+    // first number is red
+    const red = color_pallete[0];
+    // green
+    const green = color_pallete[1];
+    //blue
+    const blue = color_pallete[2];
+
+    // the max number from the three
+    const accent_color
+
+
+}
+
 // exports
 module.exports = {
     makeSureFolderExists

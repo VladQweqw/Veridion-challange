@@ -3,7 +3,9 @@
     "apache-arrow": "^19.0.1",
     "axios": "^1.8.4",
     "cheerio": "^1.0.0",
+    "colorthief": "^2.6.0",
     "duckdb": "^1.2.0",
+    "get-image-colors": "^4.0.1",
     "parquetjs-lite": "^0.8.7"
   }
 }
